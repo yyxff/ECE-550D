@@ -1,11 +1,23 @@
 # addsub-base
 
+## name:
+
+## netID:
+
 ## design
-- reuse the RCA_4b from lab before
-- reuse it for both add and sub
+- use CSA_32b, build from RCA_4b
+  - up to down
+  - CSA_32b
+  - CSA_16b
+  - CSA_8b
+  - RCA_4b
+  - full_adder
+- use only one of it for both add and sub
+  - use mux to select b and notb
+  - connect cin to ALUopcode
 
 ## input
-- for add, use the normal RCA calculation
+- for add, use the normal CSA calculation
 - for sub, input ~B instead of B, and assign the cin by 1'b1
 
 - code:
@@ -40,14 +52,14 @@ assign cin_now = (ctrl_ALUopcode == 2'b00000)? 1'b0: 1'b1;
 - code:
 ```verilog
 // add overflow
-and(of_add0, ~data_operandA[31], ~data_operandB[31], add_result[31]);
-and(of_add1, data_operandA[31], data_operandB[31], ~add_result[31]);
+and(of_add0, ~data_operandA[31], ~data_operandB[31], result[31]);
+and(of_add1, data_operandA[31], data_operandB[31], ~result[31]);
 or(add_overflow, of_add0, of_add1);
 
 
 // sub overflow
-and(of_sub0, data_operandA[31], ~data_operandB[31], ~add_result[31]);
-and(of_sub1, ~data_operandA[31], data_operandB[31], add_result[31]);
+and(of_sub0, data_operandA[31], ~data_operandB[31], ~result[31]);
+and(of_sub1, ~data_operandA[31], data_operandB[31], result[31]);
 or(sub_overflow, of_sub0, of_sub1);
 
 assign overflow = (ctrl_ALUopcode == 2'b00000)? add_overflow: sub_overflow; 
