@@ -33,11 +33,11 @@ module alu(data_operandA, data_operandB, ctrl_ALUopcode, ctrl_shiftamt, data_res
 		end
 	endgenerate
 
-	assign b = (ctrl_ALUopcode == 2'b00000)? data_operandB:notb;
+	assign b = (ctrl_ALUopcode[0])? notb: data_operandB;
 	
 	
 	// input cin = 0 if add, input cin = 1 if sub
-	assign cin_now = (ctrl_ALUopcode == 2'b00000)? 1'b0:1'b1;
+	assign cin_now = (ctrl_ALUopcode[0])? 1'b1:1'b0;
 	
 	// do add or sub by CSA_32b
 	CSA_32b csa(.a(data_operandA), .b(b), .cin(cin_now), .cout(cout_now), .s(data_result));
@@ -56,6 +56,6 @@ module alu(data_operandA, data_operandB, ctrl_ALUopcode, ctrl_shiftamt, data_res
 	
 	
 	// overflow result
-	assign overflow = (ctrl_ALUopcode == 2'b00000)? add_overflow: sub_overflow; 
+	assign overflow = (ctrl_ALUopcode[0])? sub_overflow: add_overflow; 
 	
 endmodule

@@ -20,8 +20,8 @@ module CSA_8b(a, b, cin, cout, s);
 	RCA_4b low_rca(.a(a[3:0]), .b(b[3:0]), .cin(cin), .cout(cout_low), .s(s[3:0]));
 	
 	//mux
-	assign s[7:4] = (cout_low == 1'b0)? s_c0: s_c1;
-	assign cout = (cout_low == 1'b0)? cout_c0: cout_c1;
+	assign s[7:4] = (cout_low)? s_c1: s_c0;
+	assign cout = (cout_low)? cout_c1: cout_c0;
 
 	
 endmodule

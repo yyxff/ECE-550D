@@ -38,8 +38,8 @@ generate
 endgenerate
 
 // input depends on opcode
-assign b = (ctrl_ALUopcode == 2'b00000)? data_operandB: notb;
-assign cin_now = (ctrl_ALUopcode == 2'b00000)? 1'b0: 1'b1;
+assign b = (ctrl_ALUopcode[0])? notb: data_operandB;
+assign cin_now = (ctrl_ALUopcode[0])? 1'b1: 1'b0;
 
 // do add or sub by CSA_32b
 CSA_32b csa(.a(data_operandA), .b(b), .cin(cin_now), .cout(cout_now), .s(data_result));
@@ -80,6 +80,6 @@ and(of_sub0, data_operandA[31], notb[31], notres31);
 and(of_sub1, nota31, data_operandB[31], result[31]);
 or(sub_overflow, of_sub0, of_sub1);
 
-assign overflow = (ctrl_ALUopcode == 2'b00000)? add_overflow: sub_overflow; 
+assign overflow = (ctrl_ALUopcode[0])? sub_overflow: add_overflow; 
 ```
   

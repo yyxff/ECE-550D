@@ -21,7 +21,7 @@ module CSA_16b(a, b, cin, cout, s);
 	
 	
 	//mux
-	assign s[15:8] = (cout_low == 1'b0)? s_c0: s_c1;
-	assign cout = (cout_low == 1'b0)? cout_c0: cout_c1;
+	assign s[15:8] = (cout_low)? s_c1: s_c0;
+	assign cout = (cout_low)? cout_c1: cout_c0;
 	
 endmodule
