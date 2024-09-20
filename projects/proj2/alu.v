@@ -112,11 +112,16 @@ module alu(data_operandA, data_operandB, ctrl_ALUopcode, ctrl_shiftamt, data_res
 	endgenerate
 	
 	/*
+	SLL
+	*/
+	
+	
+	/*
 	data_result
 	*/
 	assign data_result = (op_add)? cal_result:
 								(op_sub)? cal_result:
 								(op_and)? andAB:
-								(op_or)?  orAB:data_result;
-	
+								(op_or)?  orAB: data_result;
+	 
 endmodule
