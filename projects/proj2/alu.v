@@ -114,7 +114,14 @@ module alu(data_operandA, data_operandB, ctrl_ALUopcode, ctrl_shiftamt, data_res
 	/*
 	SLL
 	*/
+	wire [31:0] sll_result;
+	sll alu_sll(.data(data_operandA), .shamt(ctrl_shiftamt), .result(sll_result));
 	
+	/*
+	SRA
+	*/
+	wire [31:0] sra_result;
+	sra alu_sra(.data(data_operandA), .shamt(ctrl_shiftamt), .result(sra_result));
 	
 	/*
 	data_result
@@ -122,6 +129,8 @@ module alu(data_operandA, data_operandB, ctrl_ALUopcode, ctrl_shiftamt, data_res
 	assign data_result = (op_add)? cal_result:
 								(op_sub)? cal_result:
 								(op_and)? andAB:
-								(op_or)?  orAB: data_result;
+								(op_or)?  orAB: 
+								(op_sll)? sll_result: 
+								(op_sra)? sra_result: data_result;
 	 
 endmodule
