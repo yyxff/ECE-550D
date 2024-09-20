@@ -82,15 +82,49 @@ module alu(data_operandA, data_operandB, ctrl_ALUopcode, ctrl_shiftamt, data_res
 	/*
 	isNotEqual
 	*/
-	assign isNotEqual = (op_sub)? |data_result: 1'b0;
+	wire notEqual;
+	or(notEqual, data_result[0],
+					 data_result[1],
+					 data_result[2],
+					 data_result[3],
+					 data_result[4],
+					 data_result[5],
+					 data_result[6],
+					 data_result[7],
+					 data_result[8],
+					 data_result[9],
+					 data_result[10],
+					 data_result[11],
+					 data_result[12],
+					 data_result[13],
+					 data_result[14],
+					 data_result[15],
+					 data_result[16],
+					 data_result[17],
+					 data_result[18],
+					 data_result[19],
+					 data_result[20],
+					 data_result[21],
+					 data_result[22],
+					 data_result[23],
+					 data_result[24],
+					 data_result[25],
+					 data_result[26],
+					 data_result[27],
+					 data_result[28],
+					 data_result[29],
+					 data_result[30],
+					 data_result[31]
+					 );
+	assign isNotEqual = (op_sub)? notEqual: 1'b0;
 	
 	
 	/*
 	isLessThan
 	*/
-	wire notEqual;
-	assign notEqual = (overflow)? ~data_result[31]: data_result;
-	assign isLessThan = (op_sub)? notEqual: 1'b0;
+	wire less;
+	assign less = (overflow)? ~data_result[31]: data_result;
+	assign isLessThan = (op_sub)? less: 1'b0;
 	
 	/*
 	AND
