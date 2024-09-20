@@ -1,5 +1,20 @@
 # full ALU
 
+## name: Yangfan Ye
+
+## NetID: yy465
+
+## modules
+
+- `alu` top entity
+  - `sll` for SLL op
+  - `sra` for SRA op
+  - `CSA_32b`
+  - `CSA_16b`
+  - `CSA_8b`
+  - `RCA_4b`
+  - `full_adder`
+
 ## opcode
 
 - get `op_xxx' by and gates to represent every opcode situation
