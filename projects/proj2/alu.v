@@ -58,8 +58,7 @@ module alu(data_operandA, data_operandB, ctrl_ALUopcode, ctrl_shiftamt, data_res
 	
 	// do add or sub by CSA_32b
 	CSA_32b csa(.a(data_operandA), .b(b), .cin(cin_now), .cout(cout_now), .s(cal_result));
-	//assign data_result = (op_add)? cal_result: dataresult;
-	//assign data_result = (op_sub)? cal_result: dataresult;
+
 	
 	/*
 	overflow
@@ -80,6 +79,18 @@ module alu(data_operandA, data_operandB, ctrl_ALUopcode, ctrl_shiftamt, data_res
 	// overflow result
 	assign overflow = (op_sub)? sub_overflow: add_overflow; 
 	
+	/*
+	isNotEqual
+	*/
+	assign isNotEqual = (op_sub)? |data_result: 1'b0;
+	
+	
+	/*
+	isLessThan
+	*/
+	wire notEqual;
+	assign notEqual = (overflow)? ~data_result[31]: data_result;
+	assign isLessThan = (op_sub)? notEqual: 1'b0;
 	
 	/*
 	AND
@@ -95,10 +106,9 @@ module alu(data_operandA, data_operandB, ctrl_ALUopcode, ctrl_shiftamt, data_res
 		end
 	endgenerate
 	
-	//assign data_result = (op_and)? andAB: data_result;
 	
 	/*
-	AND
+	OR
 	*/
 	
 	// wires

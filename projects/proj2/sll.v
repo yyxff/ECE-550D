@@ -1,3 +1,4 @@
+//logic
 module sll(data, shamt, result);
 
 	input [31:0] data;
