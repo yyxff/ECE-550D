@@ -97,22 +97,19 @@ module m5_counter(
 			end
 			end
 			
-			me_5:
-			if(w)begin
-				next_me <= me_0;
-				count_me <= 3'b000;
+			me_5:begin
+			next_me <= me_0;
+			count_me <= 3'b000;
 			end
 			
-			me_6:
-			if(w)begin
-				next_me <= me_0;
-				count_me <= 3'b000;
+			me_6:begin
+			next_me <= me_0;
+			count_me <= 3'b000;
 			end
 			
-			me_7:
-			if(w)begin
-				next_me <= me_0;
-				count_me <= 3'b000;
+			me_7:begin
+			next_me <= me_0;
+			count_me <= 3'b000;
 			end
 		endcase
 	end
@@ -161,24 +158,18 @@ module m5_counter(
 			end
 			
 			mo_5:begin
-			count_mo <= mo_5;
-			if(w)begin
-				next_mo <= mo_0;
-			end
+			count_mo <= mo_0;
+			next_mo <= mo_0;
 			end
 			
 			mo_6:begin
-			count_mo <= mo_6;
-			if(w)begin
-				next_mo <= mo_0;
-			end
+			count_mo <= mo_0;
+			next_mo <= mo_0;
 			end
 			
 			mo_7:begin
-			count_mo <= mo_7;
-			if(w)begin
-				next_mo <= mo_0;
-			end
+			count_mo <= mo_0;
+			next_mo <= mo_0;
 			end
 		endcase
 	end
