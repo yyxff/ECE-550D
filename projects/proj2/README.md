@@ -9,15 +9,15 @@
 - `alu` top entity
   - `sll` for SLL op
   - `sra` for SRA op
-  - `CSA_32b`
-  - `CSA_16b`
-  - `CSA_8b`
-  - `RCA_4b`
-  - `full_adder`
+  - `CSA_32b` for add/sub op
+  - `CSA_16b` to contribute `CSA_32b`
+  - `CSA_8b` to contribute `CSA_16b`
+  - `RCA_4b` to contribute `CSA_8b`
+  - `full_adder` to contribute `RCA_4b`
 
 ## opcode
 
-- get `op_xxx' by and gates to represent every opcode situation
+- get `op_xxx` by and gates to represent every opcode situation
 - then assign `data_result` by this `op_xxx`
 
 ### code:
@@ -54,8 +54,9 @@ assign data_result = (op_add)? cal_result:
 
 > can we use `|A`?
 
-- Use `or` gate to gather 32bits of operand
-
+- Use `or` gate to gather each bit of `sub_result`
+  - if there is no 1, isNotEqual = 0
+  - if there is at least one 1, isNotEqual = 1
 
 
 ### isLessThan
@@ -63,8 +64,8 @@ assign data_result = (op_add)? cal_result:
 - we get it from the sub result
 - so we need to consider `overflow`
 
-- If `sub_result[31]` is 1$\Rightarrow$ `isLessThan` is 1
-  - Except: `overflow` is 1
+- If `sub_result[31]` is 1 $\Rightarrow$ `isLessThan` is 1
+  - Except: when `overflow` is 1
     - pos - neg = neg
       - get 1, should be 0
     - neg - pos = pos
@@ -78,7 +79,7 @@ assign data_result = (op_add)? cal_result:
 isLessThan
 */
 wire less;
-assign less = (overflow)? ~data_result[31]: data_result;
+assign less = (overflow)? ~data_result[31]: data_result[31];
 assign isLessThan = (op_sub)? less: 1'b0;
 ```
 
