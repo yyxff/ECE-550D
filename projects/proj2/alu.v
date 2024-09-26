@@ -123,7 +123,7 @@ module alu(data_operandA, data_operandB, ctrl_ALUopcode, ctrl_shiftamt, data_res
 	isLessThan
 	*/
 	wire less;
-	assign less = (overflow)? ~data_result[31]: data_result;
+	assign less = (overflow)? ~data_result[31]: data_result[31];
 	assign isLessThan = (op_sub)? less: 1'b0;
 	
 	/*
