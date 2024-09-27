@@ -34,7 +34,22 @@ module regfile_tb();
         // Begin testing... (loop over registers)
         for(index = 0; index <= 31; index = index + 1) begin
             writeRegister(index, 32'h0000DEAD);
-            checkRegister(index, 32'h0000DEAD);
+				if (index>0) begin
+					checkRegister(index, 32'h0000DEAD);
+				end
+				else begin
+					checkRegister(index, 32'h00000000);
+				end
+        end
+		  
+		  for(index = 0; index <= 31; index = index + 1) begin
+//            writeRegister(index, 32'h0000DEAD);
+            if (index>0) begin
+					checkRegister(index, 32'h0000DEAD);
+				end
+				else begin
+					checkRegister(index, 32'h00000000);
+				end
         end
 
         if (errors == 0) begin
