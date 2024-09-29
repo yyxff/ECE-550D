@@ -15,7 +15,7 @@ module regfile (
    /* YOUR CODE HERE */
 	
 
-	reg clr;
+	//reg clr;
 	
 	//32 32b wire
 	wire [31:0] readData[31:0];
@@ -28,7 +28,7 @@ module regfile (
 								 .d(data_writeReg),
 								 .clk(clock),
 								 .en(ctrl_writeEnable),
-								 .clr(clr)
+								 .clr(ctrl_reset)
 								 );
 			end
 			else begin
@@ -36,7 +36,7 @@ module regfile (
 									 .d(32'h00000000),
 									 .clk(clock),
 									 .en(ctrl_writeEnable),
-									 .clr(clr)
+									 .clr(ctrl_reset)
 									 );
 			end
 				
