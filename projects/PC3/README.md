@@ -5,9 +5,9 @@
 ## netid: yy465
 
 ## modules
-- `regfile`: top entity
-- `regfile_tb`: test_bench
 - `dffe`: 32b register
+- `regfile`: top entity
+- `decoder`: 5 to 32 decoder to decode write address
 
 ## dffe
 - every `dffe` is a 32 bits register(with beheaviral verilog)
@@ -68,3 +68,10 @@ wire [31:0] readData[31:0];
 assign data_readRegA = readData[ctrl_readRegA];
 assign data_readRegB = readData[ctrl_readRegB];
 ```
+
+## decoder
+- use `sll` in PC2 to build decoder by mux
+- input `ctrl_writeEnable`(1b) and `ctrl_writeReg`(5b), output `dec_writeEnable`(32b)
+  - if `ctrl_writeEnable`is 0, output will be all 0
+  - if `ctrl_writeEnable`is 1, we will left-shift `32'h00000001` by amount of `ctrl_writeReg`
+  - in this way we only enabled the reg we selected by `ctrl_writeReg`, or enabled nothing if `ctrl_writeEnable` is 0
