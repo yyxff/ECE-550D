@@ -31,11 +31,20 @@ module regfile_tb();
         ctrl_reset = 1'b0;    // de-assert reset
         @(negedge clock);    // wait until next negative edge of clock
 
+		  // check init
+		  for(index = 0; index <= 31; index = index + 1) begin
+//            writeRegister(index, 32'h0000DEAD);
+				checkRegister(index, 32'h00000000);
+        end
+		  
+		  
         // Begin testing... (loop over registers)
+		  $display("checking init");
         for(index = 0; index <= 31; index = index + 1) begin
             writeRegister(index, 32'h0000DEAD);
 				if (index>0) begin
 					checkRegister(index, 32'h0000DEAD);
+					checkRegister((index+1)%32, 32'h00000000);
 				end
 				else begin
 					checkRegister(index, 32'h00000000);
@@ -106,6 +115,7 @@ module regfile_tb();
 
         begin
             @(negedge clock);    // wait for next negedge of clock
+				$display($time, " << reading register %d with %h >>", checkReg, exp);
 
             ctrl_readRegA = checkReg;    // test port A
             ctrl_readRegB = checkReg;    // test port B

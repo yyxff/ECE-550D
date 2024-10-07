@@ -15,11 +15,16 @@ module regfile (
    /* YOUR CODE HERE */
 	
 
-	//reg clr;
 	
 	//32 32b wire
 	wire [31:0] readData[31:0];
 	
+	//32b decoded write address
+	wire [31:0] dec_writeEnable;
+	decoder_5to32 decoder(.enable(ctrl_writeEnable), .shamt(ctrl_writeReg), .result(dec_writeEnable));
+	
+	// connect every reg
+	// reg0 should stay 0
 	genvar i;
 	generate 
 		for (i=0;i<32;i=i+1) begin: regs
@@ -27,7 +32,7 @@ module regfile (
 				dffe_ref my_dffe(.q(readData[i]), 
 								 .d(data_writeReg),
 								 .clk(clock),
-								 .en(ctrl_writeEnable),
+								 .en(dec_writeEnable[i]),
 								 .clr(ctrl_reset)
 								 );
 			end
@@ -35,7 +40,7 @@ module regfile (
 				dffe_ref my_dffe(.q(readData[i]), 
 									 .d(32'h00000000),
 									 .clk(clock),
-									 .en(ctrl_writeEnable),
+									 .en(dec_writeEnable[i]),
 									 .clr(ctrl_reset)
 									 );
 			end
@@ -44,10 +49,8 @@ module regfile (
 		end
 	endgenerate
 	
-//	wire address_a0,address_b0;
-//	and(address_a0,~ctrl_readRegA[4],~ctrl_readRegA[3],~ctrl_readRegA[2],~ctrl_readRegA[1],~ctrl_readRegA[0]);
-//	and(address_b0,~ctrl_readRegB[4],~ctrl_readRegB[3],~ctrl_readRegB[2],~ctrl_readRegB[1],~ctrl_readRegB[0]);
-	
+
+	// read port
 	assign data_readRegA = readData[ctrl_readRegA];
 	assign data_readRegB = readData[ctrl_readRegB];
 	
