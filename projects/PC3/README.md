@@ -6,7 +6,7 @@
 
 ## modules
 - `dffe`: 32b register
-- `regfile`: top entity
+- `regfile`: top entity, where we construct 32 registers
 - `decoder`: 5 to 32 decoder to decode write address
 
 ## dffe
