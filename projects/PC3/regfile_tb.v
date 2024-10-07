@@ -32,6 +32,7 @@ module regfile_tb();
         @(negedge clock);    // wait until next negative edge of clock
 
 		  // check init
+		  $display("checking init");
 		  for(index = 0; index <= 31; index = index + 1) begin
 //            writeRegister(index, 32'h0000DEAD);
 				checkRegister(index, 32'h00000000);
@@ -39,12 +40,24 @@ module regfile_tb();
 		  
 		  
         // Begin testing... (loop over registers)
-		  $display("checking init");
         for(index = 0; index <= 31; index = index + 1) begin
             writeRegister(index, 32'h0000DEAD);
 				if (index>0) begin
 					checkRegister(index, 32'h0000DEAD);
-					checkRegister((index+1)%32, 32'h00000000);
+					checkRegister((index+31)%32, 32'h0000DEAD);
+				end
+				else begin
+					checkRegister(index, 32'h00000000);
+				end
+        end
+		  
+		  // Begin testing2... (loop over registers)
+        for(index = 0; index <= 31; index = index + 1) begin
+            writeRegister(index, index);
+				if (index>0) begin
+					checkRegister(index, index);
+					checkRegister((index+1)%32, 32'h0000DEAD);
+					checkRegister((index+31)%32, (index+31)%32);
 				end
 				else begin
 					checkRegister(index, 32'h00000000);
@@ -54,7 +67,7 @@ module regfile_tb();
 		  for(index = 0; index <= 31; index = index + 1) begin
 //            writeRegister(index, 32'h0000DEAD);
             if (index>0) begin
-					checkRegister(index, 32'h0000DEAD);
+					checkRegister(index, index);
 				end
 				else begin
 					checkRegister(index, 32'h00000000);
