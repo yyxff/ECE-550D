@@ -31,10 +31,27 @@ module skeleton(clock, reset, imem_clock, dmem_clock, processor_clock, regfile_c
         (these may be inverted, divided, or unchanged from the original clock input). Your grade will be 
         based on proper functioning with this clock.
     */
-    output imem_clock, dmem_clock, processor_clock, regfile_clock;
-	 assign imem_clock = clock & (~reset);
-	 assign processor_clock = clock;
-	 assign regfile_clock = clock;
+    output wire imem_clock, dmem_clock, processor_clock, regfile_clock;
+	  
+	 // imem clock
+	 frequency_divider_by2 imem_divider(.clk(clock),
+													.rst(~reset),
+													.out_clk(imem_clock));
+													
+	 assign processor_clock = imem_clock;
+	 assign regfile_clock = imem_clock;
+
+	 // processor clock											
+//	 frequency_divider_by2 processor_divider(.clk(clock),
+//													.rst(reset),
+//													.out_clk(processor_clock));
+	 
+	 // regfile clock
+//	 frequency_divider_by2 regfile_divider(.clk(clock),
+//													.rst(reset),
+//													.out_clk(regfile_clock));
+
+	 // dmem clock
 	 assign dmem_clock = clock;
 
     /** IMEM **/
