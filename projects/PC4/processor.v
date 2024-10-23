@@ -98,10 +98,12 @@ module processor(
 	 assign op = q_imem[31:27];
 	 assign func = q_imem[6:2];
 	 
+	 // get all op signal
 	 wire op_r, op_addi, op_sw, op_lw, op_i;
-	 // get all func code
+	 // get all func signal
 	 wire func_add, func_sub, func_and, func_or, func_sll, func_sra;
 	 
+	 // control circuit
 	 control my_control(op,
 							  func,
 							  op_r, 
@@ -110,20 +112,10 @@ module processor(
 							  op_lw, 
 							  op_i,
 							  func_add, 
-							  func_sub);
-//	 and(op_r, ~op[4], ~op[3], ~op[2], ~op[1], ~op[0]);
-//	 and(op_addi, ~op[4], ~op[3], op[2], ~op[1], op[0]);
-//	 and(op_sw, ~op[4], ~op[3], op[2], op[1], op[0]);
-//	 and(op_lw, ~op[4], op[3], ~op[2], ~op[1], ~op[0]);
-//	 or(op_i, op_addi, op_lw, op_sw);
-	 
-	 
-	 // get all func code
-//	 wire func_add, func_sub, func_and, func_or, func_sll, func_sra;
-	 
-//	 and(func_add, op_r, ~func[4], ~func[3], ~func[2], ~func[1], ~func[0]);
-//	 and(func_sub, op_r, ~func[4], ~func[3], ~func[2], ~func[1], func[0]);
-//	 and(func_and, ~func[4], ~func[3], ~func[2], func[1], ~func[0]);
+							  func_sub,
+							  ctrl_writeEnable,
+							  wren);
+
 //	 and(func_or, ~func[4], ~func[3], ~func[2], func[1], func[0]);
 //	 and(func_sll, ~func[4], ~func[3], func[2], ~func[1], ~func[0]);
 //	 and(func_sra, ~func[4], ~func[3], func[2], ~func[1], func[0]);
@@ -148,13 +140,13 @@ module processor(
 							 
 							 
 	 // out
-	 assign data_result = (overflow_m & func_add)? 32'd1:
+	 assign calcu_result = (overflow_m & func_add)? 32'd1:
 									(overflow_m & op_addi)? 32'd2:
 									(overflow_m & func_sub)? 32'd3:alu_result;
 									
-	 assign data_writeReg = (op_lw)? q_dmem:data_result;
+	 assign data_writeReg = (op_lw)? q_dmem:calcu_result;
 	 
-	 assign address_dmem = data_result;
+	 assign address_dmem = calcu_result;
 	 
 	 assign data = data_readRegB;
 							 
@@ -200,9 +192,7 @@ module processor(
 	 assign ctrl_readRegA = q_imem[21:17];
 	 assign ctrl_readRegB = (op_sw)? q_imem[26:22]:q_imem[16:12];
 	 
-	 
-	 // control signals
-	 or(ctrl_writeEnable, op_r, op_addi, op_lw);
-	 or(wren, op_sw);
+	 // //
+
 
 endmodule
