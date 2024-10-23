@@ -13,6 +13,11 @@ module skeleton_tb();
     wire [4:0] ctrl_writeReg, ctrl_readRegA, ctrl_readRegB;
     wire [31:0] data_writeReg;
     wire [31:0] data_readRegA, data_readRegB;
+	 
+	 wire [11:0] address_dmem;
+    wire [31:0] data;
+    wire wren;
+    wire [31:0] q_dmem;
 
     // Tracking the number of errors
     integer errors;
@@ -28,7 +33,11 @@ module skeleton_tb();
 									ctrl_readRegB,
 									data_writeReg,
 									data_readRegA, 
-									data_readRegB
+									data_readRegB,
+									address_dmem,
+									data,
+									wren,
+									q_dmem
 									);
 
     // setting the initial values of all the reg
@@ -53,6 +62,18 @@ module skeleton_tb();
 		  $display("reg $a %h, $b %h", data_readRegA, data_readRegB);
 		  $display("reg $a %h, $b %h", data_readRegA, data_readRegB);
 		  
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
 		  @(negedge clock);
 		  @(negedge clock);
 		  @(negedge clock);

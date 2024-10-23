@@ -97,18 +97,19 @@ module processor(
 	 wire [4:0] op, func;
 	 assign op = q_imem[31:27];
 	 assign func = q_imem[6:2];
-	 wire op_r, op_i, op_sw, op_lw;
+	 wire op_r, op_addi, op_sw, op_lw, op_i;
 	 and(op_r, ~op[4], ~op[3], ~op[2], ~op[1], ~op[0]);
-	 and(op_i, ~op[4], ~op[3], op[2], ~op[1], op[0]);
+	 and(op_addi, ~op[4], ~op[3], op[2], ~op[1], op[0]);
 	 and(op_sw, ~op[4], ~op[3], op[2], op[1], op[0]);
 	 and(op_lw, ~op[4], op[3], ~op[2], ~op[1], ~op[0]);
+	 or(op_i, op_addi, op_lw, op_sw);
 	 
 	 
 	 // get all func code
-//	 wire func_add, func_sub, func_and, func_or, func_sll, func_sra;
-//	 
-//	 and(func_add, ~func[4], ~func[3], ~func[2], ~func[1], ~func[0]);
-//	 and(func_sub, ~func[4], ~func[3], ~func[2], ~func[1], func[0]);
+	 wire func_add, func_sub, func_and, func_or, func_sll, func_sra;
+	 
+	 and(func_add, op_r, ~func[4], ~func[3], ~func[2], ~func[1], ~func[0]);
+	 and(func_sub, op_r, ~func[4], ~func[3], ~func[2], ~func[1], func[0]);
 //	 and(func_and, ~func[4], ~func[3], ~func[2], func[1], ~func[0]);
 //	 and(func_or, ~func[4], ~func[3], ~func[2], func[1], func[0]);
 //	 and(func_sll, ~func[4], ~func[3], func[2], ~func[1], ~func[0]);
@@ -116,21 +117,45 @@ module processor(
 	 
 	 
 	 // main alu
-	 wire [31:0] operandB;
+	 // in wire
+	 wire [31:0] operandB, sn_im;
 	 wire isNotEqual_m, isLessThan_m, overflow_m;
+	 wire [16:0] im;
 	 
-	 assign operandB = (op_r)? data_readRegB:
-							 (op_i)? {16'd0, q_imem[15:0]}: operandB;
+	 // out wire
+	 wire [31:0] alu_result,data_result;
+	 
+	 // in
+	 assign im = q_imem[16:0];
+	 assign sn_im = {{15{im[16]}}, im};
+	 
+	 assign operandB = (op_r)? data_readRegB: 
+							 (op_i)? sn_im:32'hzzzzzzzz;
+							 
+							 
+							 
+	 // out
+	 assign data_result = (overflow_m & func_add)? 32'd1:
+									(overflow_m & op_addi)? 32'd2:
+									(overflow_m & func_sub)? 32'd3:alu_result;
+									
+	 assign data_writeReg = (op_lw)? q_dmem:data_result;
+	 
+	 assign address_dmem = data_result;
+	 
+	 assign data = data_readRegB;
 							 
 	 alu alu_main(.data_operandA(data_readRegA), 
 						.data_operandB(operandB), 
-						.ctrl_ALUopcode(q_imem[6:2]),
+						.ctrl_ALUopcode(func),
 						.ctrl_shiftamt(q_imem[11:7]), 
-						.data_result(data_writeReg), 
+						.data_result(alu_result), 
 						.isNotEqual(isNotEqual_m), 
 						.isLessThan(isLessThan_m), 
 						.overflow(overflow_m)
 						);
+						
+	 
 	 
 	 
 	 // PC reg
@@ -158,12 +183,12 @@ module processor(
 					
 					
 	 // connect regfile
-	 assign ctrl_writeReg = q_imem[26:22];
+	 assign ctrl_writeReg = (overflow_m & (func_add | func_sub | op_addi))? 5'd30:q_imem[26:22];
 	 assign ctrl_readRegA = q_imem[21:17];
-	 assign ctrl_readRegB = q_imem[16:12];
+	 assign ctrl_readRegB = (op_sw)? q_imem[26:22]:q_imem[16:12];
 	 
 	 
 	 // control signals
-	 or(ctrl_writeEnable, op_r, op_i);
+	 or(ctrl_writeEnable, op_r, op_addi, op_lw);
 
 endmodule
