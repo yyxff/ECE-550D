@@ -20,7 +20,7 @@ module control(op,
 	output wire ctrl_writeEnable, wren;
 	
 	// get all op type
-//	wire op_r, op_addi, op_sw, op_lw, op_i;
+//	wire op_r, op_addi, op_sw, op_lw, op_i;/
 	
 	and(op_r, ~op[4], ~op[3], ~op[2], ~op[1], ~op[0]);
 	and(op_addi, ~op[4], ~op[3], op[2], ~op[1], op[0]);

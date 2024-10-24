@@ -103,7 +103,7 @@ module processor(
 	 // get all func signal
 	 wire func_add, func_sub, func_and, func_or, func_sll, func_sra;
 	 
-	 // control circuit
+	 // control circuit//
 	 control my_control(op,
 							  func,
 							  op_r, 
@@ -118,7 +118,7 @@ module processor(
 
 //	 and(func_or, ~func[4], ~func[3], ~func[2], func[1], func[0]);
 //	 and(func_sll, ~func[4], ~func[3], func[2], ~func[1], ~func[0]);
-//	 and(func_sra, ~func[4], ~func[3], func[2], ~func[1], func[0]);
+//	 and(func_sra, ~func[4], ~func[3], func[2], ~func[1], func[0]);/
 	 
 	 
 	 // main alu
@@ -128,7 +128,7 @@ module processor(
 	 wire [16:0] im;
 	 
 	 // out wire
-	 wire [31:0] alu_result,data_result;
+	 wire [31:0] alu_result,calcu_result;
 	 
 	 // in
 	 assign im = q_imem[16:0];
