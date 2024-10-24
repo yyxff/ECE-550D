@@ -90,6 +90,31 @@ module skeleton_tb();
 		  @(negedge clock);
 		  @(negedge clock);
 		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
 		  
 		  
 

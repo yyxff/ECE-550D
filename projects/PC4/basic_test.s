@@ -18,6 +18,17 @@ sw $8, 3($2)
 # check lw
 lw $9, 3($2)
 add $10, $9, $8
+# check overflow
+sll $11, $1, 30
+addi $12, $11, 0 
+# overflow
+add $13, $12, $11
+sll $14, $11, 1
+addi $15, $14, -1
+sub $16, $14, $1
+
+
+
 
 # still need to check overflow and signed number
 
