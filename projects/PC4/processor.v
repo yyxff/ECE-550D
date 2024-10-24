@@ -102,6 +102,7 @@ module processor(
 	 wire op_r, op_addi, op_sw, op_lw, op_i;
 	 // get all func signal
 	 wire func_add, func_sub, func_and, func_or, func_sll, func_sra;
+	 wire [4:0] func_code;
 	 
 	 // control circuit//
 	 control my_control(op,
@@ -114,7 +115,8 @@ module processor(
 							  func_add, 
 							  func_sub,
 							  ctrl_writeEnable,
-							  wren);
+							  wren,
+							  func_code);
 
 //	 and(func_or, ~func[4], ~func[3], ~func[2], func[1], func[0]);
 //	 and(func_sll, ~func[4], ~func[3], func[2], ~func[1], ~func[0]);
@@ -126,6 +128,7 @@ module processor(
 	 wire [31:0] operandB, sn_im;
 	 wire isNotEqual_m, isLessThan_m, overflow_m;
 	 wire [16:0] im;
+	 
 	 
 	 // out wire
 	 wire [31:0] alu_result,calcu_result;
@@ -152,7 +155,7 @@ module processor(
 							 
 	 alu alu_main(.data_operandA(data_readRegA), 
 						.data_operandB(operandB), 
-						.ctrl_ALUopcode(func),
+						.ctrl_ALUopcode(func_code),
 						.ctrl_shiftamt(q_imem[11:7]), 
 						.data_result(alu_result), 
 						.isNotEqual(isNotEqual_m), 

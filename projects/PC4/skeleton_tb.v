@@ -46,6 +46,7 @@ module skeleton_tb();
         $display($time, " << Starting the Simulation >>");
         clock = 1'b0;    // at time 0
         errors = 0;
+		  index = 0;
 
         reset = 1'b1;    // assert reset
 

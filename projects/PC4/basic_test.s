@@ -1,17 +1,28 @@
+# check addi
 addi $2, $0, 5
 addi $1, $0, 1
-add $3, $1, $2
-add $4, $1, $2
-add $5, $1, $2
-add $6, $1, $2
-add $7, $1, $2
-add $8, $1, $2
-add $9, $1, $2
-sub $3, $1, $0
-sw $1, 3($0)
-lw $2, 3($0)
+# check add
 add $3, $2, $1
-add $2, $1, $3
+# check sub
+sub $4, $2, $1
+# check add
+add $5, $2, $1
+# check or
+or $6, $2, $1
+# check sll
+sll $7, $2, 2
+# check sra
+sra $8, $2, 2
+# check sw
+sw $8, 3($2)
+# check lw
+lw $9, 3($2)
+add $10, $9, $8
+
+# still need to check overflow and signed number
+
+#add $3, $2, $1
+#add $2, $1, $3
 #nop
 
 #addi $1, $0, 5  # r1 = 5

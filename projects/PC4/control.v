@@ -8,13 +8,15 @@ module control(op,
 					func_add, 
 					func_sub,
 					ctrl_writeEnable,
-					wren);
+					wren,
+					func_code);
 	
 	
 	input [4:0] op, func;
 	
 	// op and func type
 	output wire op_r, op_addi, op_sw, op_lw, op_i,func_add, func_sub;
+	output wire [4:0] func_code;
 	
 	// get write enable signals
 	output wire ctrl_writeEnable, wren;
@@ -39,4 +41,7 @@ module control(op,
 //	assign ctrl_writeEnable = (op_r)?
 	
 	or(wren, op_sw,1'b0);
+	
+	// func_code
+	assign func_code = (op_i)? {5{1'b0}}: func;
 endmodule
