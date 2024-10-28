@@ -149,7 +149,7 @@ module processor(
 									
 	 assign data_writeReg = (op_lw)? q_dmem:calcu_result;
 	 
-	 assign address_dmem = calcu_result;
+	 assign address_dmem = calcu_result[11:0];
 	 
 	 assign data = data_readRegB;
 							 
