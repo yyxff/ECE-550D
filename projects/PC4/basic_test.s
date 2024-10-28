@@ -29,6 +29,12 @@ sub $16, $14, $1
 # add to same reg
 add $2, $2, $2
 add $2, $2, $2
+# addi neg
+addi $17, $1, -1
+# add r0
+addi $0, $1, 1
+add $0, $0, $0
+
 
 
 

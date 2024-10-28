@@ -115,7 +115,42 @@ module skeleton_tb();
 		  @(negedge clock);
 		  @(negedge clock);
 		  @(negedge clock);
-		  
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
+		  @(negedge clock);
 		  
 
 //		  reset = 1'b0; #10
