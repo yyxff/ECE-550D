@@ -28,4 +28,6 @@ addi $1, $1, 1
 # check setx
 setx 9
 addi $7, $30, 0
+# check jr
+jr $31
 

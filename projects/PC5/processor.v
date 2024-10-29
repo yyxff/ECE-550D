@@ -179,11 +179,11 @@ module processor(
 	 // connect regfile
 	 assign ctrl_writeReg = (op_jal)? 5'd31: (op_setx|(overflow_m & (func_add | func_sub | op_addi)))? 5'd30:q_imem[26:22];
 	 assign ctrl_readRegA = (op_bex)? 5'd0: q_imem[21:17];
-	 assign ctrl_readRegB = (op_bex)? 5'd30: (op_sw|op_bne|op_blt)? q_imem[26:22]:q_imem[16:12];
+	 assign ctrl_readRegB = (op_bex)? 5'd30: (op_sw|op_bne|op_blt|op_jr)? q_imem[26:22]:q_imem[16:12];
 	 
 	 
 	 // PC reg
-	 wire [31:0] next_PC,normal_next_PC,b_next_PC,nb_next_PC;
+	 wire [31:0] next_PC,normal_next_PC,b_next_PC;
 	 wire [31:0] current_PC;
 	 assign address_imem = current_PC[11:0];
 	 dffe_ref PC(.q(current_PC),
@@ -218,18 +218,18 @@ module processor(
 					
 	// get real next PC
 	wire jump_b;
-	assign nb_next_PC = (jump_b)? b_next_PC: normal_next_PC;
+//	assign nb_next_PC = (jump_b)? b_next_PC: normal_next_PC;
 	assign jump_b = (op_bne & isNotEqual_m) | (op_blt & isLessThan_m);
 	
 	
 	//j1
-	wire [26:0] j_im;
+	wire [31:0] j_im;
 	wire jump_j1;
-	assign j_im = q_imem[26:0];
-	assign next_PC = (jump_j1)? {nb_next_PC[31:27], j_im}: nb_next_PC;
+	assign j_im = {5'd0, q_imem[26:0]};
+	assign next_PC = (op_jr)? data_readRegB: (jump_j1)? j_im: (jump_b)? b_next_PC: normal_next_PC;
 	assign jump_j1 = op_j|op_jal|op_bex;
 	
 	// alu main
-	assign data_writeReg = (op_setx)? {5'd0,j_im}: (op_jal)? normal_next_PC: (op_lw)? q_dmem:calcu_result;
+	assign data_writeReg = (op_setx)? j_im: (op_jal)? normal_next_PC: (op_lw)? q_dmem:calcu_result;
 	
 endmodule
