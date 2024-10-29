@@ -14,6 +14,7 @@ module control(op,
 					op_setx,
 					func_add, 
 					func_sub,
+					op_j1,
 					ctrl_writeEnable,
 					wren,
 					func_code);
@@ -23,7 +24,7 @@ module control(op,
 //	input isNotEqual_m;
 	
 	// op and func type
-	output wire op_r, op_addi, op_sw, op_lw, op_i, op_j, op_bne, op_jal, op_jr, op_blt, op_bex, op_setx, func_add, func_sub;
+	output wire op_r, op_addi, op_sw, op_lw, op_i, op_j, op_bne, op_jal, op_jr, op_blt, op_bex, op_setx, func_add, func_sub, op_j1;
 	output wire [4:0] func_code;
 	
 	// get write enable signals

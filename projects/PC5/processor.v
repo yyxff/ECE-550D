@@ -99,7 +99,7 @@ module processor(
 	 assign func = q_imem[6:2];
 	 
 	 // get all op signal
-	 wire op_r, op_addi, op_sw, op_lw, op_i, op_j, op_bne, op_jal, op_jr, op_blt, op_bex, op_setx;
+	 wire op_r, op_addi, op_sw, op_lw, op_i, op_j, op_bne, op_jal, op_jr, op_blt, op_bex, op_setx, op_j1;
 	 // get all func signal
 	 wire func_add, func_sub, func_and, func_or, func_sll, func_sra;
 	 wire [4:0] func_code;
@@ -121,6 +121,7 @@ module processor(
 							  op_setx,
 							  func_add, 
 							  func_sub,
+							  op_j1,
 							  ctrl_writeEnable,
 							  wren,
 							  func_code);
@@ -182,7 +183,7 @@ module processor(
 	 
 	 
 	 // PC reg
-	 wire [31:0] next_PC,normal_next_PC,b_next_PC;
+	 wire [31:0] next_PC,normal_next_PC,b_next_PC,nb_next_PC;
 	 wire [31:0] current_PC;
 	 assign address_imem = current_PC[11:0];
 	 dffe_ref PC(.q(current_PC),
@@ -217,6 +218,15 @@ module processor(
 					
 	// get real next PC
 	wire jump_b;
-	assign next_PC = (jump_b)? b_next_PC: normal_next_PC;
+	assign nb_next_PC = (jump_b)? b_next_PC: normal_next_PC;
 	assign jump_b = (op_bne & isNotEqual_m) | (op_blt & isLessThan_m);
+	
+	
+	//j1
+	wire [26:0] j_im;
+	wire jump_j1;
+	assign j_im = q_imem[26:0];
+	assign next_PC = (jump_j1)? {nb_next_PC[31:27], j_im}: nb_next_PC;
+	assign jump_j1 = op_j1;
+	
 endmodule
