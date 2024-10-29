@@ -25,4 +25,7 @@ add $6, $4, $5
 bex 24
 addi $1, $1, -5
 addi $1, $1, 1
+# check setx
+setx 9
+addi $7, $30, 0
 

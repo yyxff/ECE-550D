@@ -177,7 +177,7 @@ module processor(
 					
 					
 	 // connect regfile
-	 assign ctrl_writeReg = (op_jal)? 5'd31: (op_bex|(overflow_m & (func_add | func_sub | op_addi)))? 5'd30:q_imem[26:22];
+	 assign ctrl_writeReg = (op_jal)? 5'd31: (op_setx|(overflow_m & (func_add | func_sub | op_addi)))? 5'd30:q_imem[26:22];
 	 assign ctrl_readRegA = (op_bex)? 5'd0: q_imem[21:17];
 	 assign ctrl_readRegB = (op_bex)? 5'd30: (op_sw|op_bne|op_blt)? q_imem[26:22]:q_imem[16:12];
 	 
@@ -230,6 +230,6 @@ module processor(
 	assign jump_j1 = op_j|op_jal|op_bex;
 	
 	// alu main
-	assign data_writeReg = (op_jal)? normal_next_PC: (op_lw)? q_dmem:calcu_result;
+	assign data_writeReg = (op_setx)? {5'd0,j_im}: (op_jal)? normal_next_PC: (op_lw)? q_dmem:calcu_result;
 	
 endmodule

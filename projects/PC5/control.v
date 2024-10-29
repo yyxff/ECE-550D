@@ -53,7 +53,7 @@ module control(op,
 	and(func_sub, op_r, ~func[4], ~func[3], ~func[2], ~func[1], func[0]);
 
 	// write enable signals
-	or(ctrl_writeEnable, op_r, op_addi, op_lw, op_jal);
+	or(ctrl_writeEnable, op_r, op_addi, op_lw, op_jal, op_setx);
 	or(wren, op_sw,1'b0);
 	
 	// func_code
