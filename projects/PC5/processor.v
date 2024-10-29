@@ -130,7 +130,7 @@ module processor(
 	 
 	 // main alu
 	 // in wire
-	 wire [31:0] operandA, sn_im;
+	 wire [31:0] operandB, sn_im;
 	 wire isNotEqual_m, isLessThan_m, overflow_m;
 	 wire [16:0] im;
 	 
@@ -142,7 +142,7 @@ module processor(
 	 assign im = q_imem[16:0];
 	 assign sn_im = {{15{im[16]}}, im};
 	 
-	 assign operandA = (op_r|op_bne|op_blt)? data_readRegA: 
+	 assign operandB = (op_r|op_bne|op_blt|op_bex)? data_readRegB: 
 							 (op_i)? sn_im:32'hzzzzzzzz;
 							 
 							 
@@ -156,10 +156,10 @@ module processor(
 	 
 	 assign address_dmem = calcu_result[11:0];
 	 
-	 assign data = data_readRegA;
+	 assign data = data_readRegB;
 							 
-	 alu alu_main(.data_operandA(operandA), 
-						.data_operandB(data_readRegB), 
+	 alu alu_main(.data_operandA(data_readRegA), 
+						.data_operandB(operandB), 
 						.ctrl_ALUopcode(func_code),
 						.ctrl_shiftamt(q_imem[11:7]), 
 						.data_result(alu_result), 
@@ -177,9 +177,9 @@ module processor(
 					
 					
 	 // connect regfile
-	 assign ctrl_writeReg = (op_jal)? 5'd31: (overflow_m & (func_add | func_sub | op_addi))? 5'd30:q_imem[26:22];
-	 assign ctrl_readRegA = (op_sw|op_bne|op_blt)? q_imem[26:22]:q_imem[16:12];
-	 assign ctrl_readRegB = q_imem[21:17];
+	 assign ctrl_writeReg = (op_jal)? 5'd31: (op_bex|(overflow_m & (func_add | func_sub | op_addi)))? 5'd30:q_imem[26:22];
+	 assign ctrl_readRegA = (op_bex)? 5'd0: q_imem[21:17];
+	 assign ctrl_readRegB = (op_bex)? 5'd30: (op_sw|op_bne|op_blt)? q_imem[26:22]:q_imem[16:12];
 	 
 	 
 	 // PC reg
