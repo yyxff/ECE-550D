@@ -93,72 +93,42 @@ module processor(
     /* YOUR CODE STARTS HERE */
 	 
 	 
+	 /*
+	 
+	 connect wires of control circuit, toget all op type and control signal from them
+	 
+	 */ 
+	 
 	 // get all opcode
 	 wire [4:0] op, func;
-	 assign op = q_imem[31:27];
-	 assign func = q_imem[6:2];
-	 
 	 // get all op signal
 	 wire op_r, op_addi, op_sw, op_lw, op_i, op_j, op_bne, op_jal, op_jr, op_blt, op_bex, op_setx, op_j1;
 	 // get all func signal
-	 wire func_add, func_sub, func_and, func_or, func_sll, func_sra;
+	 wire func_add, func_sub;
+	 // wire func_and, func_or, func_sll, func_sra; (not used for now)
 	 wire [4:0] func_code;
 	 
-	 // control circuit
-	 control my_control(op,
-							  func,
-							  op_r, 
-							  op_addi, 
-							  op_sw, 
-							  op_lw, 
-							  op_i,
-							  op_j, 
-							  op_bne, 
-							  op_jal, 
-							  op_jr, 
-							  op_blt, 
-							  op_bex, 
-							  op_setx,
-							  func_add, 
-							  func_sub,
-							  op_j1,
-							  ctrl_writeEnable,
-							  wren,
-							  func_code);
+	 // control circuit instance
+	 control my_control(op,func,op_r, op_addi, op_sw, op_lw, op_i,op_j, op_bne, op_jal, op_jr, op_blt, op_bex, op_setx,func_add, func_sub,op_j1,ctrl_writeEnable,wren,func_code);
 
 	 
 	 
-	 // main alu
+	 /*
+	 
+	 connect wires of main alu and its datapath
+	 
+	 */
+	 
 	 // in wire
 	 wire [31:0] operandB, sn_im;
 	 wire isNotEqual_m, isLessThan_m, overflow_m;
 	 wire [16:0] im;
 	 
-	 
 	 // out wire
 	 wire [31:0] alu_result,calcu_result;
-	 
-	 // in
-	 assign im = q_imem[16:0];
-	 assign sn_im = {{15{im[16]}}, im};
-	 
-	 assign operandB = (op_r|op_bne|op_blt|op_bex)? data_readRegB: 
-							 (op_i)? sn_im:32'hzzzzzzzz;
 							 
-							 
-							 
-	 // out
-	 assign calcu_result = (overflow_m & func_add)? 32'd1:
-									(overflow_m & op_addi)? 32'd2:
-									(overflow_m & func_sub)? 32'd3:alu_result;
-									
-	 
-	 
-	 assign address_dmem = calcu_result[11:0];
-	 
-	 assign data = data_readRegB;
-							 
-	 alu alu_main(.data_operandA(data_readRegA), 
+	 // alu instance
+	 alu alu_main( .data_operandA(data_readRegA), 
 						.data_operandB(operandB), 
 						.ctrl_ALUopcode(func_code),
 						.ctrl_shiftamt(q_imem[11:7]), 
@@ -169,31 +139,30 @@ module processor(
 						);
 						
 	 
+	 /*
 	 
+	 connect wires of PC
 	 
+	 */
 	 
-	 
-	 
-					
-					
-	 // connect regfile
-	 assign ctrl_writeReg = (op_jal)? 5'd31: (op_setx|(overflow_m & (func_add | func_sub | op_addi)))? 5'd30:q_imem[26:22];
-	 assign ctrl_readRegA = (op_bex)? 5'd0: q_imem[21:17];
-	 assign ctrl_readRegB = (op_bex)? 5'd30: (op_sw|op_bne|op_blt|op_jr)? q_imem[26:22]:q_imem[16:12];
-	 
-	 
-	 // PC reg
+	 // different PC choices
 	 wire [31:0] next_PC,normal_next_PC,b_next_PC;
 	 wire [31:0] current_PC;
-	 assign address_imem = current_PC[11:0];
-	 dffe_ref PC(.q(current_PC),
-					.d(next_PC),
-					.clk(clock),
-					.en(1'b1),
-					.clr(reset)
-					);
-	 // PC alu
+	 
+	 // PC alu wires
 	 wire isNotEqual_PC, isLessThan_PC, overflow_PC;
+	 // PC branch alu wires
+	 wire isNotEqual_b, isLessThan_b, overflow_b;
+	 
+	 // PC register instance
+	 dffe_ref PC(  .q(current_PC),
+						.d(next_PC),
+						.clk(clock),
+						.en(1'b1),
+						.clr(reset)
+						);
+					
+	 // PC alu instance
 	 alu alu_PC(.data_operandA(current_PC), 
 					.data_operandB(32'd1), 
 					.ctrl_ALUopcode(5'd0),
@@ -204,9 +173,8 @@ module processor(
 					.overflow(overflow_PC)
 					);
 					
-	 // b alu
-	 wire isNotEqual_b, isLessThan_b, overflow_b;
-	 alu alu_b(.data_operandA(normal_next_PC), 
+	 // PC branch alu instance
+	 alu alu_b( .data_operandA(normal_next_PC), 
 					.data_operandB(sn_im), 
 					.ctrl_ALUopcode(5'd0),
 					.ctrl_shiftamt(5'd0), 
@@ -216,20 +184,89 @@ module processor(
 					.overflow(overflow_b)
 					);
 					
-	// get real next PC
-	wire jump_b;
-//	assign nb_next_PC = (jump_b)? b_next_PC: normal_next_PC;
-	assign jump_b = (op_bne & isNotEqual_m) | (op_blt & isLessThan_m);
-	
-	
-	//j1
+	// get j_im from 27b to 32b
 	wire [31:0] j_im;
+	
+	// if jump by b
+	wire jump_b;
+	// if jump by j1
 	wire jump_j1;
-	assign j_im = {5'd0, q_imem[26:0]};
-	assign next_PC = (op_jr)? data_readRegB: (jump_j1)? j_im: (jump_b)? b_next_PC: normal_next_PC;
-	assign jump_j1 = op_j|op_jal|op_bex;
+	
+	
+	
+	
+	/*
+	
+	logic of input of control circuit
+
+	*/
+	
+	// to get op type and func type
+	assign op = q_imem[31:27];
+	assign func = q_imem[6:2];
+	
+	
+	/*
+	
+	logic of alu main
+	
+	*/
 	
 	// alu main
-	assign data_writeReg = (op_setx)? j_im: (op_jal)? normal_next_PC: (op_lw)? q_dmem:calcu_result;
+	// logic of input wires
+	assign im = q_imem[16:0];
+	assign sn_im = {{15{im[16]}}, im};
+	 
+	assign operandB = (op_r|op_bne|op_blt|op_bex)? data_readRegB: 
+							(op_i)? sn_im:32'hzzzzzzzz;
+	
+	// logic of output wires
+	assign calcu_result = (overflow_m & func_add)? 32'd1:
+								 (overflow_m & op_addi)? 32'd2:
+								 (overflow_m & func_sub)? 32'd3:alu_result;
+	
+   // logic to dmem	
+	assign address_dmem = calcu_result[11:0];
+	assign data = data_readRegB;
+	
+	
+	/* 
+	
+	logic of regfile wires
+	
+	*/
+	
+	assign ctrl_writeReg = (op_jal)? 5'd31: 
+								  (op_setx|(overflow_m & (func_add | func_sub | op_addi)))? 5'd30:q_imem[26:22];
+								  
+	assign ctrl_readRegA = (op_bex)? 5'd0: q_imem[21:17];
+	
+	assign ctrl_readRegB = (op_bex)? 5'd30: 
+								  (op_sw|op_bne|op_blt|op_jr)? q_imem[26:22]:q_imem[16:12];
+								  
+	assign data_writeReg = (op_setx)? j_im: 
+								  (op_jal)? normal_next_PC: 
+								  (op_lw)? q_dmem:calcu_result;
+	
+	/*
+	
+	logic of PC
+	
+	*/
+	
+	// pass PC to address_imem
+	assign address_imem = current_PC[11:0];
+	
+	// if branch
+	assign jump_b = (op_bne & isNotEqual_m) | (op_blt & isLessThan_m);
+	
+	// if jump1 or jr
+	assign j_im = {5'd0, q_imem[26:0]};
+	assign jump_j1 = op_j|op_jal|op_bex;
+	
+	// get next PC
+	assign next_PC = (op_jr)? data_readRegB: 
+						  (jump_j1)? j_im: 
+						  (jump_b)? b_next_PC: normal_next_PC;
 	
 endmodule
